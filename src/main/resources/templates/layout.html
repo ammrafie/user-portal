@@ -1,0 +1,83 @@
+<!--This is the base layout for all of the html templates-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>User Portal</title>
+    <link rel="stylesheet"
+          th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css/}" />
+    <link rel="stylesheet"
+          th:href="@{/webjars/font-awesome/6.2.0/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar" sec:authorize="isFullyAuthenticated()">
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/profile}">Profile</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+            <a class="nav-link"  th:href="@{/users}">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/change-password}">Change Password</a>
+        </li>
+    </ul>
+</div>
+<!-- Main Navigation -->
+<div layout:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">User Portal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <th:block sec:authorize="!isFullyAuthenticated()">
+                        <li class="nav-item">
+                            <i class="fas fa-user-lock"></i>
+                            <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <i class="fas fa-user-plus"></i>
+                            <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                        </li>
+                    </th:block>
+                    <th:block sec:authorize="isFullyAuthenticated()">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" sec:authentication="principal.firstName" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                            </a>
+                            <ul class="dropdown-menu" style="margin: 0 -4rem">
+                                <li><a class="dropdown-item" th:href="@{/change-password}">Change Password</a></li>
+                                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<!--Main Content holder-->
+<main class="container mt-5">
+    <div layout:fragment="content" class="row"></div>
+</main>
+<div layout:fragment="scripts">
+    <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+    <script th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#user-table').DataTable();
+        });
+    </script>
+</div>
+</body>
+</html>
